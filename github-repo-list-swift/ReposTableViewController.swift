@@ -14,12 +14,32 @@ class ReposTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
+      store.getRepositoriesFromAPI(with: {
+         DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+      })
         
         self.tableView.accessibilityLabel = "tableView"
         
     }
 
     // MARK: - Table view data source
- 
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return store.repositories.count
+    }
 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "repoCell", for: indexPath)
+        let infoAPI = store.repositories[indexPath.row]
+        cell.detailTextLabel?.text = String(describing: infoAPI.htmlURL)
+        cell.textLabel?.text = infoAPI.fullName 
+        
+        return cell
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+       return 1
+    }
 }
